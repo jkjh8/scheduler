@@ -10,7 +10,18 @@ import TimeView from "components/time/timeView.vue";
           <q-icon name="img:LogoMain.png" size="md" />
           <div class="toolbar-font">스케줄 컨트롤러</div>
         </div>
-        <TimeView />
+
+        <div class="row no-wrap items-center q-gutter-x-sm">
+          <TimeView />
+          <q-icon
+            class="cursor-pointer"
+            name="settings"
+            size="xs"
+            color="primary"
+          >
+            <q-tooltip>세팅</q-tooltip>
+          </q-icon>
+        </div>
       </q-toolbar>
     </q-header>
 
