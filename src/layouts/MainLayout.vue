@@ -1,12 +1,37 @@
 <script setup>
-import TimeView from "components/time/timeView.vue";
+import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
+
+import StatusIndicator from 'components/statusIndicator.vue'
+import TimeView from 'components/time/timeView.vue'
+import { settings } from 'src/composables/useSettings'
+
+const $r = useRouter()
+
+onMounted(() => {
+  console.log('MainLayout mounted')
+  // init
+  window.ipc.on('settings', (args) => {
+    if (typeof args === 'object') {
+      for (let key in args) {
+        if (key in settings) {
+          settings[key] = args[key]
+        }
+      }
+    }
+  })
+  window.ipc.send('ui:open')
+})
 </script>
 
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated class="bg-white text-black">
+    <q-header class="bg-white text-black">
       <q-toolbar class="justify-between">
-        <div class="row no-wrap justify-start items-center q-gutter-x-sm">
+        <div
+          class="row no-wrap justify-start items-center q-gutter-x-sm cursor-pointer"
+          @click="$r.push('/')"
+        >
           <q-icon name="img:LogoMain.png" size="md" />
           <div class="toolbar-font">스케줄 컨트롤러</div>
         </div>
@@ -18,14 +43,17 @@ import TimeView from "components/time/timeView.vue";
             name="settings"
             size="xs"
             color="primary"
+            @click="$r.push('/setup')"
           >
             <q-tooltip>세팅</q-tooltip>
           </q-icon>
         </div>
       </q-toolbar>
+      <q-separator />
     </q-header>
 
     <q-page-container>
+      <StatusIndicator />
       <router-view />
     </q-page-container>
   </q-layout>
@@ -36,7 +64,7 @@ import TimeView from "components/time/timeView.vue";
   font-size: 20px;
   font-weight: 600;
   margin-left: 10px;
-  font-family: "NotoSansKR";
+  font-family: 'NotoSansKR';
   color: #333;
 }
 </style>

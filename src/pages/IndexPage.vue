@@ -1,15 +1,24 @@
+<script setup>
+import { settings } from 'src/composables/useSettings.js'
+const { mainStatus, backupStatus, active } = settings
+</script>
 <template>
-  <q-page class="flex flex-center">
-    <img
-      alt="Quasar logo"
-      src="~assets/quasar-logo-vertical.svg"
-      style="width: 200px; height: 200px"
-    >
+  <q-page style="padding-top: 5px; padding-right: 5px">
+    <div>index</div>
   </q-page>
 </template>
 
-<script setup>
-defineOptions({
-  name: 'IndexPage'
-});
-</script>
+<style scoped>
+.icon-font {
+  font-size: 10px;
+  font-weight: 600;
+  margin-left: 3px;
+  font-family: 'NotoSansKR';
+}
+.active {
+  color: #4caf50;
+}
+.inactive {
+  color: #777;
+}
+</style>

@@ -2,16 +2,16 @@ import { app, BrowserWindow } from 'electron'
 import path from 'path'
 import os from 'os'
 import { fnSetIpcMain } from './ipc'
-
+import initValueFromDb from './db/initValueFromDb.js'
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform()
 
 let mainWindow
 
-function createWindow() {
-  /**
-   * Initial window options
-   */
+async function createWindow() {
+  // init value from db
+  await initValueFromDb()
+  // Create the browser window.
   mainWindow = new BrowserWindow({
     icon: path.resolve(__dirname, 'icons/icon.png'), // tray icon
     width: 1000,

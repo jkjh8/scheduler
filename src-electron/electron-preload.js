@@ -5,7 +5,7 @@ contextBridge.exposeInMainWorld('ipc', {
     // whitelist channels
     ipcRenderer.send(channel, data)
   },
-  receive: (channel, func) => {
+  on: (channel, func) => {
     // Deliberately strip event as it includes `sender`
     ipcRenderer.on(channel, (event, ...args) => func(...args))
   },
