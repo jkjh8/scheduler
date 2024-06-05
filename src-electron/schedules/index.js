@@ -2,7 +2,11 @@ import api from 'src-electron/api'
 import logger from 'src-electron/logger'
 import defaultValue from 'src-electron/defaultVal'
 
-const schedule = []
+let schedules = []
+
+const fnUpdateSchedule = (arr) => {
+  schedules = [...arr]
+}
 
 const fnGetAddr = (addr) => {
   return {
@@ -14,11 +18,13 @@ const fnGetAddr = (addr) => {
 const fnGetSchedule = async () => {
   try {
     const addresses = fnGetAddr('api/app/schedule')
-    const { data } = await api.get(addresses.main)
+    if (defaultValue.mode === 'main' && defaultValue.mainServer) {
+      const { data } = await api.get(addresses.main)
+    }
     console.log(data)
   } catch (error) {
     logger.error(`Get Schedule Error ${error}`)
   }
 }
 
-export { schedule, fnGetAddr, fnGetSchedule }
+export { schedules, fnUpdateSchedule, fnGetAddr, fnGetSchedule }

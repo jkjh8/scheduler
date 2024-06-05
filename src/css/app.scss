@@ -1,7 +1,7 @@
 // app global css in SCSS form
 // app global css in SCSS form
 .font-main {
-  font-family: "NotoSansKR";
+  font-family: 'NotoSansKR';
   color: #222;
 }
 
@@ -21,26 +21,32 @@
 
 .dialog-name {
   font-weight: bold;
-  font-family: "NotoSansKR";
+  font-family: 'NotoSansKR';
   font-size: 1rem;
 }
 .dialog-caption {
-  font-family: "NotoSansKR";
+  font-family: 'NotoSansKR';
   font-size: 10px;
 }
 
 .sans-font {
-  font-family: "NotoSansKR";
+  font-family: 'NotoSansKR';
 }
 .font-sans {
-  font-family: "NotoSansKR";
+  font-family: 'NotoSansKR';
 }
 .caption {
   font-size: 0.7rem;
 }
 
 .card-name {
-  font-family: "NotoSansKR";
+  font-family: 'NotoSansKR';
   font-size: 1rem;
   font-weight: 600;
+}
+
+.table-name {
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'NotoSansKR';
 }

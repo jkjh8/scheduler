@@ -13,10 +13,12 @@
     "build": "quasar build"
   },
   "dependencies": {
+    "@quasar/cli": "^2.4.1",
     "@quasar/extras": "^1.16.4",
     "axios": "^1.2.1",
     "nedb-promises": "^6.2.3",
     "quasar": "^2.16.0",
+    "socket.io-client": "^4.7.5",
     "vue": "^3.4.18",
     "vue-router": "^4.0.12",
     "winston": "^3.13.0",

@@ -4,22 +4,14 @@ import { onMounted } from 'vue'
 
 import StatusIndicator from 'components/statusIndicator.vue'
 import TimeView from 'components/time/timeView.vue'
-import { settings } from 'src/composables/useSettings'
+import { fnUpdateSettings } from 'src/composables/useSettings'
 
 const $r = useRouter()
 
 onMounted(() => {
   console.log('MainLayout mounted')
   // init
-  window.ipc.on('settings', (args) => {
-    if (typeof args === 'object') {
-      for (let key in args) {
-        if (key in settings) {
-          settings[key] = args[key]
-        }
-      }
-    }
-  })
+  window.ipc.on('settings', (args) => fnUpdateSettings(args))
   window.ipc.send('ui:open')
 })
 </script>

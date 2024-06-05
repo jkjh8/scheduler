@@ -9,4 +9,14 @@ const settings = reactive({
   count: 0
 })
 
-export { settings }
+const fnUpdateSettings = (args) => {
+  if (typeof args === 'object') {
+    for (let key in args) {
+      if (key in settings) {
+        settings[key] = args[key]
+      }
+    }
+  }
+}
+
+export { settings, fnUpdateSettings }
