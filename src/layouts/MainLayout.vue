@@ -5,14 +5,20 @@ import { onMounted } from 'vue'
 import StatusIndicator from 'components/statusIndicator.vue'
 import TimeView from 'components/time/timeView.vue'
 import { fnUpdateSettings } from 'src/composables/useSettings'
+import { fnUpdateSchedules } from 'src/composables/useSchedules'
 
 const $r = useRouter()
 
-onMounted(() => {
+onMounted(async () => {
   console.log('MainLayout mounted')
   // init
   window.ipc.on('settings', (args) => fnUpdateSettings(args))
+  // schedule
+  window.ipc.on('schedules', (arr) => fnUpdateSchedules(arr))
+  // open trigger
   window.ipc.send('ui:open')
+  // get Token
+  // window.ipc.send('api:tokens')
 })
 </script>
 
@@ -42,10 +48,10 @@ onMounted(() => {
         </div>
       </q-toolbar>
       <q-separator />
+      <StatusIndicator />
     </q-header>
 
     <q-page-container>
-      <StatusIndicator />
       <router-view />
     </q-page-container>
   </q-layout>
@@ -55,7 +61,6 @@ onMounted(() => {
 .toolbar-font {
   font-size: 20px;
   font-weight: 600;
-  margin-left: 10px;
   font-family: 'NotoSansKR';
   color: #333;
 }

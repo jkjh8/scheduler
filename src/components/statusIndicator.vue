@@ -1,19 +1,46 @@
 <script setup>
 import { toRefs, onMounted } from 'vue'
+import { useQuasar } from 'quasar'
 import { settings } from 'src/composables/useSettings.js'
+import DialogMode from './DialogMode.vue'
 
-const { mainStatus, backupStatus, active } = toRefs(settings)
+const { mainStatus, backupStatus, active, mode } = toRefs(settings)
+const $q = useQuasar()
+
+const fnSelectMode = () => {
+  $q.dialog({
+    component: DialogMode,
+    componentProps: {
+      mode: mode.value
+    }
+  }).onOk((newMode) => {
+    settings.mode = newMode
+    window.ipc.send('settings:mode', newMode)
+  })
+}
 
 const fnRefreshSchedule = () => {
   window.ipc.send('schedule:refresh')
 }
 
-onMounted(() => {
-  console.log(settings)
-})
+onMounted(() => {})
 </script>
 <template>
-  <div style="padding-top: 5px; padding-right: 5px">
+  <div class="row no-wrap justify-between items-center q-pa-sm">
+    <div
+      class="row no-wrap items-center q-gutter-x-sm q-pl-md cursor-pointer"
+      @click="fnSelectMode"
+    >
+      <q-icon
+        name="dns"
+        size="xs"
+        :color="mode === 'main' ? 'primary' : 'red-10'"
+      ></q-icon>
+      <div>동작 모드:</div>
+      <div>{{ mode.toUpperCase() }}</div>
+      <q-icon name="edit" color="primary" />
+    </div>
+
     <div class="row justify-end items-center q-gutter-x-sm">
       <!-- 메인서버 상태 표시 -->
       <div

@@ -4,8 +4,16 @@ import defaultValue from 'src-electron/defaultVal'
 
 let schedules = []
 
-const fnUpdateSchedule = (arr) => {
-  schedules = [...arr]
+const fnUpdateSchedule = (obj) => {
+  if (defaultValue.mode === 'main') {
+    if (obj.main) {
+      schedules = obj.main
+    }
+  } else {
+    if (obj.backup) {
+      schedules = obj.backup
+    }
+  }
 }
 
 const fnGetAddr = (addr) => {
@@ -15,16 +23,4 @@ const fnGetAddr = (addr) => {
   }
 }
 
-const fnGetSchedule = async () => {
-  try {
-    const addresses = fnGetAddr('api/app/schedule')
-    if (defaultValue.mode === 'main' && defaultValue.mainServer) {
-      const { data } = await api.get(addresses.main)
-    }
-    console.log(data)
-  } catch (error) {
-    logger.error(`Get Schedule Error ${error}`)
-  }
-}
-
-export { schedules, fnUpdateSchedule, fnGetAddr, fnGetSchedule }
+export { schedules, fnUpdateSchedule, fnGetAddr }

@@ -1,10 +1,9 @@
 <script setup>
-import { settings } from 'src/composables/useSettings.js'
-const { mainStatus, backupStatus, active } = settings
+import ScheduleTable from 'src/components/schedule/ScheduleTable.vue'
 </script>
 <template>
   <q-page style="padding-top: 5px; padding-right: 5px">
-    <div>index</div>
+    <ScheduleTable />
   </q-page>
 </template>
 

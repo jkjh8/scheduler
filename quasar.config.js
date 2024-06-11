@@ -1,9 +1,10 @@
 /* eslint-env node */
 const { configure } = require('quasar/wrappers')
+require('dotenv').config()
 
 module.exports = configure(function (/* ctx */) {
   return {
-    boot: ['axios'],
+    boot: [],
     css: ['app.scss', 'fonts.scss'],
     extras: ['roboto-font', 'material-icons'],
     build: {
@@ -21,7 +22,11 @@ module.exports = configure(function (/* ctx */) {
           },
           { server: false }
         ]
-      ]
+      ],
+      env: {
+        USERID: process.env.USERID,
+        USERPASSWORD: process.env.USERPASSWORD
+      }
     },
     devServer: {
       open: true

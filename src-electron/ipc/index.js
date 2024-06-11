@@ -1,8 +1,14 @@
 import { BrowserWindow as bw, ipcMain } from 'electron'
-import defaultValue from '../defaultVal'
-import logger from '../logger'
-import db from '../db'
-import { fnGetSchedule } from '../schedules'
+import defaultValue from 'src-electron/defaultVal'
+import logger from 'src-electron/logger'
+import db from 'src-electron/db'
+import { fnGetMainServerToken } from 'src-electron/api'
+import { fnSendSockets } from 'src-electron/socket'
+import { schedules } from 'src-electron/schedules'
+
+import ipcSettings from './settings'
+import ipcApis from './api'
+import ipcOnStart from './onStart'
 
 const fnRt = (channel, obj) => {
   try {
@@ -13,49 +19,23 @@ const fnRt = (channel, obj) => {
 }
 
 const fnSetIpcMain = () => {
-  ipcMain.on('ui:open', () => {
-    fnRt('settings', defaultValue)
-    logger.info('UI Opened')
+  ipcOnStart()
+  ipcSettings()
+  ipcApis()
+
+  ipcMain.on('api:main:token', async () => {
+    const token = await fnGetMainServerToken()
   })
 
-  ipcMain.on('settings:active', (e, value) => {
-    try {
-      db.update({ key: 'active' }, { $set: { value } }, { upsert: true })
-      defaultValue.active = value
-      logger.info(`Active update ${value}`)
-    } catch (error) {
-      logger.error(`Active update ${error}`)
-    } finally {
-      fnRt('settings', defaultValue)
-    }
-  })
-
+  // schedule refresh
   ipcMain.on('schedule:refresh', async () => {
-    await fnGetSchedule()
+    console.log('refres')
+    fnSendSockets('schedule:refresh')
   })
 
-  ipcMain.on('settings:main:ipaddress', async (e, value) => {
-    try {
-      db.update({ key: 'mainServer' }, { $set: { value } }, { upsert: true })
-      defaultValue.mainServer = value
-      logger.info(`Main Server IP Address update ${value}`)
-    } catch (error) {
-      logger.error(`Main Server IP Address update ${error}`)
-    } finally {
-      fnRt('settings', defaultValue)
-    }
-  })
-
-  ipcMain.on('settings:backup:ipaddress', async (e, value) => {
-    try {
-      db.update({ key: 'backupServer' }, { $set: { value } }, { upsert: true })
-      defaultValue.backupServer = value
-      logger.info(`Backup Server IP Address update ${value}`)
-    } catch (error) {
-      logger.error(`Backup Server IP Address update ${error}`)
-    } finally {
-      fnRt('settings', defaultValue)
-    }
+  // handle ipcMain async
+  ipcMain.handle('schedules', async (event) => {
+    return schedules
   })
 }
 

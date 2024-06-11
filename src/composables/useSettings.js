@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 const settings = reactive({
-  mainServer: 'http://localhost:3000',
+  mainServer: '',
   mainStatus: false,
   backupServer: '',
   backupStatus: false,

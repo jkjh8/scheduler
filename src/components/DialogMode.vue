@@ -5,7 +5,7 @@ import { useQuasar, useDialogPluginComponent } from 'quasar'
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent()
 // props
-const props = defineProps(['mode'])
+const props = defineProps(['mode', 'caption'])
 const emit = defineEmits([...useDialogPluginComponent.emits])
 const newVal = ref('')
 
