@@ -12,6 +12,7 @@ const fnConnectSocketMainServer = () => {
     if (mainSocket && mainSocket.connected) {
       mainSocket.disconnect()
     }
+    mainSocket = null
     mainSocket = fnConnectSocket('main')
   } else {
     // If the main server is not set, set the mainStatus to false
@@ -26,6 +27,7 @@ const fnConnectSocketBackupServer = () => {
     if (backupSocket && backupSocket.connected) {
       backupSocket.disconnect()
     }
+    backupSocket = null
     backupSocket = fnConnectSocket('backup')
   } else {
     // If the backup server is not set, set the backupStatus to false

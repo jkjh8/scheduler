@@ -1,20 +1,13 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted } from 'vue'
 
-const currentDateTime = ref("");
-
-const updateDateTime = () => {
-  const now = new Date();
-  const date = now.toLocaleDateString();
-  const time = now.toLocaleTimeString();
-  const day = now.toLocaleDateString(undefined, { weekday: "long" });
-  currentDateTime.value = `${date} ${day} ${time}`;
-};
+const currentDateTime = ref('')
 
 onMounted(() => {
-  updateDateTime();
-  setInterval(updateDateTime, 1000);
-});
+  window.ipc.on('timer', (arg) => {
+    currentDateTime.value = arg.full
+  })
+})
 </script>
 
 <template>
