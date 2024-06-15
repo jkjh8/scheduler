@@ -3,6 +3,7 @@ import { io } from 'socket.io-client'
 import logger from '../../logger'
 import { fnRt } from '../../ipc'
 import { schedules, fnUpdateSchedule } from 'src-electron/schedules'
+import db from '../../db'
 
 export const fnConnectSocket = (type) => {
   // Create a socket variable
@@ -21,6 +22,9 @@ export const fnConnectSocket = (type) => {
   // socket event listeners
   socket.on('connect', () => {
     defaultValue[type + 'Status'] = true
+    if (type === 'main') {
+      socket.emit('schedule:setup')
+    }
     fnRt('settings', defaultValue)
     logger.info(`${type} Server Connected`)
   })
@@ -59,6 +63,7 @@ export const fnConnectSocket = (type) => {
     }
     fnRt('schedules', schedules)
   })
+
   socket.on('active', (mode) => {
     try {
       db.update(
@@ -70,6 +75,33 @@ export const fnConnectSocket = (type) => {
       fnRt('settings', defaultValue)
     } catch (error) {
       logger.error(`Active update ${error}`)
+    }
+  })
+
+  socket.on('auto', (auto) => {
+    try {
+      db.update({ key: 'auto' }, { $set: { value: auto } }, { upsert: true })
+      defaultValue.auto = auto
+      fnRt('settings', defaultValue)
+    } catch (error) {
+      logger.error(`Auto update ${error}`)
+    }
+  })
+
+  socket.on('schedule:setup', (data) => {
+    if (defaultValue.update) {
+      fnRt('setup:update')
+      const { active, auto } = data
+      if (active === 'main' && defaultValue.mode === 'main') {
+        if (defaultValue.active === false) {
+          defaultValue.active = true
+        }
+      } else {
+        defaultValue.active = false
+      }
+      defaultValue.auto = auto
+
+      fnRt('settings', defaultValue)
     }
   })
   // return the socket

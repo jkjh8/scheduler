@@ -4,7 +4,9 @@ const defaultValue = {
   backupServer: '',
   backupStatus: false,
   active: false,
-  mode: 'main'
+  mode: 'main',
+  auto: false,
+  update: false
 }
 
 export default defaultValue

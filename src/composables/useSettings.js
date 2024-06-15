@@ -6,7 +6,9 @@ const settings = reactive({
   backupStatus: false,
   active: false,
   mode: 'main',
-  count: 0
+  count: 0,
+  auto: false,
+  update: false
 })
 
 const fnUpdateSettings = (args) => {

@@ -7,6 +7,8 @@ import MainAddress from 'src/components/setup/MainAddress.vue'
 import BackupAddress from 'src/components/setup/BackupAddress.vue'
 import ActiveSchedule from 'src/components/setup/ActiveSchedule.vue'
 import ActiveMode from 'src/components/setup/ActiveMode.vue'
+import AutoTrasfer from 'src/components/setup/AutoTransfer.vue'
+import UpdateSetupFromMain from 'src/components/setup/UpdateSetupFromMain.vue'
 </script>
 
 <template>
@@ -15,6 +17,8 @@ import ActiveMode from 'src/components/setup/ActiveMode.vue'
       <q-card-section>
         <!-- 동작모드 -->
         <ActiveMode />
+        <AutoTrasfer />
+        <update-setup-from-main />
       </q-card-section>
 
       <q-separator />

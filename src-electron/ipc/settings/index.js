@@ -32,6 +32,30 @@ export default function settings() {
       fnRt('settings', defaultValue)
     }
   })
+  // Auto Mode
+  ipcMain.on('settings:auto', (e, value) => {
+    try {
+      db.update({ key: 'auto' }, { $set: { value } }, { upsert: true })
+      defaultValue.auto = value
+      logger.info(`Auto update ${value}`)
+    } catch (error) {
+      logger.error(`Auto update ${error}`)
+    } finally {
+      fnRt('settings', defaultValue)
+    }
+  })
+  // update
+  ipcMain.on('settings:update', (e, value) => {
+    try {
+      db.update({ key: 'update' }, { $set: { value } }, { upsert: true })
+      defaultValue.update = value
+      logger.info(`Update update ${value}`)
+    } catch (error) {
+      logger.error(`Update update ${error}`)
+    } finally {
+      fnRt('settings', defaultValue)
+    }
+  })
   // Change Main Server IP Address
   ipcMain.on('settings:main:ipaddress', async (e, value) => {
     try {
