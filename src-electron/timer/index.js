@@ -3,6 +3,7 @@ import logger from '../logger'
 import { schedules } from '../schedules'
 import { fnRt } from '../ipc'
 import { fnSendSockets } from '../socket'
+import defaultValue from '../defaultVal'
 
 moment.locale('ko')
 let mainInterval = null
@@ -23,10 +24,12 @@ const fnTimer = () => {
         sec: moment(t).format('ss')
       }
       // 00:00:00일 때 스케줄 폴더 및 큐시스 스케줄 폴더 초기화
-      if (time.time === '00:00:00') {
-        fnClean()
+      if (defaultValue.active) {
+        if (time.time === '00:00:00') {
+          fnClean()
+        }
+        fnCheckSchedule(time)
       }
-      fnCheckSchedule(time)
       fnRt('timer', time)
     } catch (error) {
       logger.error('Timer Error:', error)

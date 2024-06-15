@@ -16,6 +16,23 @@ const fnSelectMode = () => {
   }).onOk((newMode) => {
     settings.mode = newMode
     window.ipc.send('settings:mode', newMode)
+    $q.notify({
+      message: '동작모드가 변경되었습니다.',
+      caption: '앱을 재시작해야 적용됩니다.',
+      position: 'top',
+      color: 'warning', // 알림의 배경색
+      icon: 'info', // 알림에 표시할 아이콘
+      timeout: 3000, // 알림이 사라지기까지의 시간 (밀리초)
+      actions: [
+        {
+          label: '닫기',
+          color: 'white',
+          handler: () => {
+            /* 닫기 버튼 클릭 시 실행될 함수 */
+          }
+        }
+      ]
+    })
   })
 }
 
@@ -26,11 +43,8 @@ const fnRefreshSchedule = () => {
 onMounted(() => {})
 </script>
 <template>
-  <div class="row no-wrap justify-between items-center q-pa-sm">
-    <div
-      class="row no-wrap items-center q-gutter-x-sm q-pl-md cursor-pointer"
-      @click="fnSelectMode"
-    >
+  <div class="row no-wrap justify-between items-center q-py-sm q-px-md">
+    <div class="row no-wrap items-center q-gutter-x-sm q-pl-md">
       <q-icon
         name="dns"
         size="xs"
@@ -38,7 +52,6 @@ onMounted(() => {})
       ></q-icon>
       <div>동작 모드:</div>
       <div>{{ mode.toUpperCase() }}</div>
-      <q-icon name="edit" color="primary" />
     </div>
 
     <div class="row justify-end items-center q-gutter-x-sm">

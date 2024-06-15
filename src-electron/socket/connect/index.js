@@ -12,7 +12,10 @@ export const fnConnectSocket = (type) => {
   socket = io(`https://${defaultValue[type + 'Server']}/scheduler`, {
     autoConnect: true,
     transports: ['websocket'],
-    rejectUnauthorized: false
+    rejectUnauthorized: false,
+    extraHeaders: {
+      type: defaultValue.mode
+    }
   })
 
   // socket event listeners
@@ -55,6 +58,19 @@ export const fnConnectSocket = (type) => {
       fnUpdateSchedule({ backup: data })
     }
     fnRt('schedules', schedules)
+  })
+  socket.on('active', (mode) => {
+    try {
+      db.update(
+        { key: 'active' },
+        { $set: { value: defaultValue.mode === mode } },
+        { upsert: true }
+      )
+      defaultValue.active = defaultValue.mode === mode
+      fnRt('settings', defaultValue)
+    } catch (error) {
+      logger.error(`Active update ${error}`)
+    }
   })
   // return the socket
   return socket

@@ -11,19 +11,12 @@ import columns from './columns.js'
 </script>
 
 <template>
-  <div class="q-px-md">
+  <div class="q-px-lg q-pt-sm">
     <div class="row no-wrap justify-between">
       <div class="row no-wrap items-center q-gutter-x-xs">
         <q-icon color="primary" name="schedule" size="sm" />
         <div class="text-h6 text-bold">오늘 스케줄</div>
       </div>
-      <q-btn
-        round
-        flat
-        icon="refresh"
-        color="primary"
-        @click="fnGetSchedules"
-      />
     </div>
     <q-table :columns="columns" :rows="schedules">
       <template #body="props">

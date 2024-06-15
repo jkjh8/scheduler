@@ -20,6 +20,18 @@ export default function settings() {
       fnRt('settings', defaultValue)
     }
   })
+  // APP 모드
+  ipcMain.on('settings:mode', (e, value) => {
+    try {
+      db.update({ key: 'mode' }, { $set: { value } }, { upsert: true })
+      defaultValue.mode = value
+      logger.info(`Mode update ${value}`)
+    } catch (error) {
+      logger.error(`Mode update ${error}`)
+    } finally {
+      fnRt('settings', defaultValue)
+    }
+  })
   // Change Main Server IP Address
   ipcMain.on('settings:main:ipaddress', async (e, value) => {
     try {
