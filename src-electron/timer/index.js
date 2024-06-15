@@ -10,7 +10,6 @@ let time
 
 const fnTimer = () => {
   mainInterval = setInterval(() => {
-    // Do something here
     try {
       const t = moment()
       time = {
@@ -23,6 +22,10 @@ const fnTimer = () => {
         min: moment(t).format('mm'),
         sec: moment(t).format('ss')
       }
+      // 00:00:00일 때 스케줄 폴더 및 큐시스 스케줄 폴더 초기화
+      if (time.time === '00:00:00') {
+        fnClean()
+      }
       fnCheckSchedule(time)
       fnRt('timer', time)
     } catch (error) {
@@ -33,16 +36,18 @@ const fnTimer = () => {
 }
 
 const fnCheckSchedule = (time) => {
-  // Do something here
   if (time.sec === '58') {
     schedules.forEach((schedule) => {
       if (schedule.time === time.schedule) {
+        // 백업 로직 추가 필요
         logger.info(`schedule in time ${schedule.name}, ${schedule.idx}`)
         fnSendSockets('inTime', schedule)
-        // Do something here
       }
     })
-    // Do something here
   }
 }
-export { fnTimer }
+
+const fnClean = () => {
+  fnSendSockets('clean', {})
+}
+export { fnTimer, fnClean }
