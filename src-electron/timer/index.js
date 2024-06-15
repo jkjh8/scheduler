@@ -35,10 +35,9 @@ const fnTimer = () => {
 const fnCheckSchedule = (time) => {
   // Do something here
   if (time.sec === '58') {
-    logger.info(`Time: ${time}`)
     schedules.forEach((schedule) => {
       if (schedule.time === time.schedule) {
-        logger.info('Schedule Time:', time.schedule)
+        logger.info(`schedule in time ${schedule.name}, ${schedule.idx}`)
         fnSendSockets('inTime', schedule)
         // Do something here
       }
