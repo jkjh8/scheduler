@@ -39,7 +39,7 @@ const fnTimer = () => {
 }
 
 const fnCheckSchedule = (time) => {
-  if (time.sec === '58') {
+  if (time.sec === '59') {
     schedules.forEach((schedule) => {
       if (schedule.time === time.schedule) {
         // 백업 로직 추가 필요

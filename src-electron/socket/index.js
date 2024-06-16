@@ -57,11 +57,16 @@ const fnSocketAddressChange = (type) => {
 }
 
 const fnSendSockets = (addr, data) => {
-  if (mainSocket && mainSocket.connected) {
-    mainSocket.emit(addr, data)
-  }
-  if (backupSocket && backupSocket.connected) {
-    backupSocket.emit(addr, data)
+  if (defaultValue.active) {
+    if (defaultValue.mode === 'main') {
+      if (mainSocket && mainSocket.connected) {
+        mainSocket.emit(addr, data)
+      }
+    } else {
+      if (backupSocket && backupSocket.connected) {
+        backupSocket.emit(addr, data)
+      }
+    }
   }
 }
 
