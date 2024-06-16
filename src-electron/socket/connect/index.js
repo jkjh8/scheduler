@@ -1,9 +1,14 @@
-import defaultValue from '../../defaultVal'
+import defaultValue from 'src-electron/defaultVal'
 import { io } from 'socket.io-client'
-import logger from '../../logger'
-import { fnRt } from '../../ipc'
+import logger from 'src-electron/logger'
+
+import { fnRt } from 'src-electron/ipc'
 import { schedules, fnUpdateSchedule } from 'src-electron/schedules'
-import db from '../../db'
+
+import defaultListener from './default'
+import customListener from './event'
+
+let transferTimeout = null
 
 export const fnConnectSocket = (type) => {
   // Create a socket variable
@@ -19,91 +24,62 @@ export const fnConnectSocket = (type) => {
     }
   })
 
+  // default socket event listeners
+  defaultListener(socket, type)
+
   // socket event listeners
   socket.on('connect', () => {
+    // 연결
     defaultValue[type + 'Status'] = true
+    // 메인 서버 연결시 세팅 받아오기
     if (type === 'main') {
       socket.emit('schedule:setup')
     }
+    // 메인 연결시 자동 전환
+    if (defaultValue.auto) {
+      if (transferTimeout) {
+        clearTimeout(transferTimeout)
+        transferTimeout = null
+      }
+      fnRt('autoconnect')
+      defaultValue.active =
+        (defaultValue.mode === 'main' && type === 'main') ||
+        (defaultValue.mode !== 'main' && type !== 'main')
+    }
+    // 프론트엔드에 세팅 전달
     fnRt('settings', defaultValue)
+    fnRt('connect', { type })
+    // 로그
     logger.info(`${type} Server Connected`)
   })
+
   socket.on('disconnect', () => {
+    // 연결 끊김
     defaultValue[type + 'Status'] = false
+    // 연결 끈어졌을때 자동 전환
+    if (defaultValue.auto) {
+      if (type === 'main') {
+        fnRt('autodisconnect')
+        transferTimeout = setTimeout(() => {
+          if (defaultValue.mode === 'main') {
+            defaultValue.active = false
+          } else {
+            defaultValue.active = true
+          }
+          fnRt('settings', defaultValue)
+          transferTimeout = null
+        }, 1000 * 60 * 5)
+      }
+    }
+    // 프론트엔드에 세팅 전달
     fnRt('settings', defaultValue)
+    fnRt('disconnect', { type })
+    // 로그
     logger.info(`${type} Server Disconnected`)
   })
-  socket.on('reconnect', () => {
-    logger.info(`${type} Server Reconnected`)
-  })
-  socket.on('reconnect_attempt', () => {
-    logger.info(`${type} Server Reconnect Attempt`)
-  })
-  socket.on('reconnect_failed', () => {
-    logger.info(`${type} Server Reconnect Failed`)
-  })
-  socket.on('reconnect_error', (error) => {
-    logger.info(`${type} Server Reconnect Error`, error)
-  })
-  socket.on('connect_error', (error) => {
-    logger.info(`${type} Server Connect Error`, error)
-  })
-  socket.on('connect_timeout', () => {
-    logger.info(`${type} Server Connect Timeout`)
-  })
-  socket.on('error', (error) => {
-    logger.info(`${type} Server Error`, error)
-  })
+
   // custom socket event listeners
-  socket.on('today', (data) => {
-    if (type === 'main') {
-      fnUpdateSchedule({ main: data })
-    } else {
-      fnUpdateSchedule({ backup: data })
-    }
-    fnRt('schedules', schedules)
-  })
-
-  socket.on('active', (mode) => {
-    try {
-      db.update(
-        { key: 'active' },
-        { $set: { value: defaultValue.mode === mode } },
-        { upsert: true }
-      )
-      defaultValue.active = defaultValue.mode === mode
-      fnRt('settings', defaultValue)
-    } catch (error) {
-      logger.error(`Active update ${error}`)
-    }
-  })
-
-  socket.on('auto', (auto) => {
-    try {
-      db.update({ key: 'auto' }, { $set: { value: auto } }, { upsert: true })
-      defaultValue.auto = auto
-      fnRt('settings', defaultValue)
-    } catch (error) {
-      logger.error(`Auto update ${error}`)
-    }
-  })
-
-  socket.on('schedule:setup', (data) => {
-    if (defaultValue.update) {
-      fnRt('setup:update')
-      const { active, auto } = data
-      if (active === 'main' && defaultValue.mode === 'main') {
-        if (defaultValue.active === false) {
-          defaultValue.active = true
-        }
-      } else {
-        defaultValue.active = false
-      }
-      defaultValue.auto = auto
-
-      fnRt('settings', defaultValue)
-    }
-  })
+  customListener(socket, type)
   // return the socket
   return socket
 }

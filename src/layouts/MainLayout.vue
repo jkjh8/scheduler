@@ -1,13 +1,14 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { onMounted } from 'vue'
-
+import { useQuasar } from 'quasar'
 import StatusIndicator from 'components/statusIndicator.vue'
 import TimeView from 'components/time/timeView.vue'
 import { fnUpdateSettings } from 'src/composables/useSettings'
 import { fnUpdateSchedules } from 'src/composables/useSchedules'
 
 const $r = useRouter()
+const $q = useQuasar()
 
 onMounted(async () => {
   console.log('MainLayout mounted')
@@ -19,6 +20,72 @@ onMounted(async () => {
   window.ipc.send('ui:open')
   // get Token
   // window.ipc.send('api:tokens')
+  window.ipc.on('disconnect', (args) => {
+    $q.notify({
+      icon: 'warning',
+      message: `${args.type.toUpperCase()} 서버 연결이 끊어졌습니다.`,
+      caption: '재접속을 시도합니다.',
+      color: 'warning',
+      position: 'top',
+      actions: [
+        {
+          icon: 'close',
+          round: true,
+          color: 'white',
+          handler: () => {}
+        }
+      ]
+    })
+  })
+  window.ipc.on('connect', (args) => {
+    $q.notify({
+      icon: 'cloud_done',
+      message: `${args.type.toUpperCase()} 서버 연결이 재연결되었습니다.`,
+      color: 'positive',
+      position: 'top',
+      actions: [
+        {
+          icon: 'close',
+          round: true,
+          color: 'white',
+          handler: () => {}
+        }
+      ]
+    })
+  })
+  window.ipc.on('autoconnect', () => {
+    $q.notify({
+      icon: 'info',
+      message: `자동 연결이 설정되어 있습니다.`,
+      color: 'info',
+      position: 'top',
+      actions: [
+        {
+          icon: 'close',
+          round: true,
+          color: 'white',
+          handler: () => {}
+        }
+      ]
+    })
+  })
+  window.ipc.on('autodisconnect', () => {
+    $q.notify({
+      icon: 'info',
+      message: `자동 절체가 실행되었습니다.`,
+      caption: '5분후에 백업 서버로 전환 됩니다.',
+      color: 'info',
+      position: 'top',
+      actions: [
+        {
+          icon: 'close',
+          round: true,
+          color: 'white',
+          handler: () => {}
+        }
+      ]
+    })
+  })
 })
 </script>
 
