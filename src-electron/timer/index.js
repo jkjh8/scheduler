@@ -23,7 +23,9 @@ const fnTimer = () => {
         min: moment(t).format('mm'),
         sec: moment(t).format('ss')
       }
-      // 00:00:00일 때 스케줄 폴더 및 큐시스 스케줄 폴더 초기화
+      // 타이머 정보 전달
+      fnRt('timer', time)
+      // active가 true일 때만 실행
       if (defaultValue.active) {
         // 매시간 정각에 이벤트 발생
         if (time.min === '00' && time.sec === '00') {
@@ -35,7 +37,6 @@ const fnTimer = () => {
         }
         fnCheckSchedule(time)
       }
-      fnRt('timer', time)
     } catch (error) {
       logger.error('Timer Error:', error)
     }
@@ -47,7 +48,6 @@ const fnCheckSchedule = (time) => {
   if (time.sec === '59') {
     schedules.forEach((schedule) => {
       if (schedule.time === time.schedule) {
-        // 백업 로직 추가 필요
         logger.info(`schedule in time ${schedule.name}, ${schedule.idx}`)
         fnSendSockets('inTime', schedule)
       }
