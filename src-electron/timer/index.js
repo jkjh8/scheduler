@@ -25,8 +25,13 @@ const fnTimer = () => {
       }
       // 00:00:00일 때 스케줄 폴더 및 큐시스 스케줄 폴더 초기화
       if (defaultValue.active) {
-        if (time.time === '00:00:00') {
-          fnClean()
+        // 매시간 정각에 이벤트 발생
+        if (time.min === '00' && time.sec === '00') {
+          fnSendSockets('hour', time)
+          // 00:00:00일 때 스케줄 폴더 및 큐시스 스케줄 폴더 초기화
+          if (time.hour === '00') {
+            fnClean()
+          }
         }
         fnCheckSchedule(time)
       }
