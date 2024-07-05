@@ -6,6 +6,7 @@ import StatusIndicator from 'components/statusIndicator.vue'
 import TimeView from 'components/time/timeView.vue'
 import { fnUpdateSettings } from 'src/composables/useSettings'
 import { fnUpdateSchedules } from 'src/composables/useSchedules'
+import { version } from '../../package.json'
 
 const $r = useRouter()
 const $q = useQuasar()
@@ -99,6 +100,7 @@ onMounted(async () => {
         >
           <q-icon name="img:LogoMain.png" size="md" />
           <div class="toolbar-font">스케줄 컨트롤러</div>
+          <div class="self-end caption sans-font">v{{ version }}</div>
         </div>
 
         <div class="row no-wrap items-center q-gutter-x-sm">
