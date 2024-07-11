@@ -3,6 +3,7 @@ import { toRefs } from 'vue'
 import { settings } from 'src/composables/useSettings.js'
 import { useAddress } from 'src/composables/useAddress'
 
+import RelayOnTime from 'src/components/setup/RelayOnTime.vue'
 import MainAddress from 'src/components/setup/MainAddress.vue'
 import BackupAddress from 'src/components/setup/BackupAddress.vue'
 import ActiveSchedule from 'src/components/setup/ActiveSchedule.vue'
@@ -19,6 +20,7 @@ import UpdateSetupFromMain from 'src/components/setup/UpdateSetupFromMain.vue'
         <ActiveMode />
         <AutoTrasfer />
         <update-setup-from-main />
+        <RelayOnTime />
       </q-card-section>
 
       <q-separator />

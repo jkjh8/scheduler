@@ -6,7 +6,8 @@ const defaultValue = {
   active: false,
   mode: 'main',
   auto: false,
-  update: false
+  update: false,
+  relayOnTime: 5
 }
 
 export default defaultValue

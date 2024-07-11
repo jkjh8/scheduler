@@ -5,7 +5,7 @@ import db from 'src-electron/db'
 // return to ipcRenderer
 import { fnRt } from '../index'
 // socket connect
-import { fnSocketAddressChange } from 'src-electron/socket'
+import { fnSendSockets, fnSocketAddressChange } from 'src-electron/socket'
 
 export default function settings() {
   // APP 동작
@@ -80,6 +80,15 @@ export default function settings() {
       logger.error(`Backup Server IP Address update ${error}`)
     } finally {
       fnRt('settings', defaultValue)
+    }
+  })
+
+  ipcMain.on('settings:relayOnTime', () => {
+    console.log('relayOnTime')
+    try {
+      fnSendSockets('relayOnTime')
+    } catch (error) {
+      logger.error(`Relay On Time update ${error}`)
     }
   })
 }

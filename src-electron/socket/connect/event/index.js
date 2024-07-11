@@ -55,4 +55,19 @@ export default function (socket, type) {
       fnRt('settings', defaultValue)
     }
   })
+
+  socket.on('relayOnTime', (time) => {
+    try {
+      db.update(
+        { key: 'relayOnTime' },
+        { $set: { value: time } },
+        { upsert: true }
+      )
+      defaultValue.relayOnTime = time
+      fnRt('settings', defaultValue)
+      logger.info(`Relay on time update ${time}`)
+    } catch (error) {
+      logger.error(`Relay on time update ${error}`)
+    }
+  })
 }

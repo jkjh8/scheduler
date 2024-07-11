@@ -9,6 +9,7 @@ const platform = process.platform || os.platform()
 let mainWindow
 
 async function createWindow() {
+  import('./menu')
   // init value from db
   await initValueFromDb()
   // Create the browser window.

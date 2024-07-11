@@ -45,7 +45,7 @@ const fnTimer = () => {
 }
 
 const fnCheckSchedule = (time) => {
-  if (time.sec === '59') {
+  if (time.sec == 60 - Number(defaultValue.relayOnTime)) {
     schedules.forEach((schedule) => {
       if (schedule.time === time.schedule) {
         logger.info(`schedule in time ${schedule.name}, ${schedule.idx}`)
