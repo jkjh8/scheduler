@@ -7,6 +7,19 @@ import initValueFromDb from './db/initValueFromDb.js'
 const platform = process.platform || os.platform()
 
 let mainWindow
+const insLock = app.requestSingleInstanceLock()
+if (!insLock) {
+  app.quit()
+} else {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized() || !mainWindow.isVisible()) {
+        mainWindow.show()
+      }
+      mainWindow.focus()
+    }
+  })
+}
 
 async function createWindow() {
   import('./menu')
@@ -36,9 +49,12 @@ async function createWindow() {
       mainWindow.webContents.closeDevTools()
     })
   }
-
-  mainWindow.on('closed', () => {
-    mainWindow = null
+  // 종료 금지
+  mainWindow.on('close', (e) => {
+    if (mainWindow.isVisible()) {
+      mainWindow.hide()
+      e.preventDefault()
+    }
   })
 
   fnSetIpcMain()

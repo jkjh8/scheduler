@@ -1,5 +1,9 @@
-import { app, Menu, BrowserWindow as bw } from 'electron'
+import { app, Menu, Tray, nativeImage, BrowserWindow as bw } from 'electron'
+import path from 'path'
 const isMac = process.platform === 'darwin'
+const img_path = process.env.DEV ? 'public' : process.resourcesPath
+
+const img_logo = nativeImage.createFromPath(path.join(img_path, 'LogoMain.png'))
 
 const template = [
   // { role: 'appMenu' }
@@ -118,3 +122,39 @@ const template = [
 
 const menu = Menu.buildFromTemplate(template)
 Menu.setApplicationMenu(menu)
+
+const trayMenu = Menu.buildFromTemplate([
+  {
+    label: '열기',
+    type: 'normal',
+    click: () => {
+      bw.fromId(1).show()
+    }
+  },
+  {
+    label: '트레이 아이콘으로 최소화하기',
+    type: 'normal',
+    accelerator: 'CommandOrControl+m',
+    click: () => {
+      bw.fromId(1).hide()
+    }
+  },
+  {
+    label: '종료',
+    accelerator: 'CommandOrControl+f4',
+    click: () => {
+      app.quit()
+    }
+  }
+])
+
+const tray = new Tray(img_logo.resize({ width: 16, height: 16 }))
+tray.setToolTip('KHNP Scheduler')
+tray.setContextMenu(trayMenu)
+tray.on('click', () => {
+  if (bw.fromId(1).isVisible()) {
+    bw.fromId(1).hide()
+  } else {
+    bw.fromId(1).show()
+  }
+})
