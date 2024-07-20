@@ -16,7 +16,7 @@ const props = defineProps(['repeat', 'weekDays', 'date', 'time'])
     <div v-if="repeat === 'everyDay'">
       {{ time }}
     </div>
-    <div v-if="repeat === 'everyWeek'">
+    <div v-if="repeat === 'everyWeek' || repeat === 'workDays'">
       <div>
         <q-chip
           v-for="day of weekDays"

@@ -18,7 +18,11 @@ import columns from './columns.js'
         <div class="text-h6 text-bold">오늘 스케줄</div>
       </div>
     </div>
-    <q-table :columns="columns" :rows="schedules">
+    <q-table
+      :columns="columns"
+      :rows="schedules"
+      :pagination="{ rowsPerPage: 10 }"
+    >
       <template #body="props">
         <q-tr :props="props">
           <q-td key="idx" :props="props">
