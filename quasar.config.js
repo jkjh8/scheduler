@@ -56,7 +56,18 @@ module.exports = configure(function (/* ctx */) {
       inspectPort: 5858,
       bundler: 'builder',
       builder: {
-        appId: 'scheduler'
+        appId: 'scheduler',
+        win: {
+          target: {
+            target: 'nsis',
+            arch: ['x64', 'ia32']
+          }
+        },
+        nsis: {
+          oneClick: false,
+          allowToChangeInstallationDirectory: true
+        },
+        extraFiles: [{ from: 'public', to: 'resources', filter: ['**/*'] }]
       }
     },
     bex: {
