@@ -70,6 +70,15 @@ const fnSendSockets = (addr, data) => {
   }
 }
 
+const fnSendSocketsAll = (addr, data) => {
+  if (mainSocket && mainSocket.connected) {
+    mainSocket.emit(addr, data)
+  }
+  if (backupSocket && backupSocket.connected) {
+    backupSocket.emit(addr, data)
+  }
+}
+
 export {
   mainSocket,
   backupSocket,
@@ -77,5 +86,6 @@ export {
   fnConnectSocketMainServer,
   fnConnectSocketBackupServer,
   fnConnectSockets,
-  fnSocketAddressChange
+  fnSocketAddressChange,
+  fnSendSocketsAll
 }

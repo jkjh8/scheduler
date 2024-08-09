@@ -78,12 +78,12 @@ onMounted(() => {})
           class="row no-wrap items-center active"
           color="primary"
         >
-          <q-icon name="play_circle"></q-icon>
-          <div class="icon-font">동작중</div>
+          <q-icon name="play_circle" size="md"></q-icon>
+          <div class="icon-font-lg">동작중</div>
         </div>
         <div v-else class="row no-wrap items-center inactive">
-          <q-icon name="pause_circle"></q-icon>
-          <div class="icon-font">대기중</div>
+          <q-icon name="pause_circle" size="md"></q-icon>
+          <div class="icon-font-lg">대기중</div>
         </div>
       </div>
       <!-- 스케줄 리프레시 -->
@@ -103,6 +103,12 @@ onMounted(() => {})
 <style scoped>
 .icon-font {
   font-size: 10px;
+  font-weight: 600;
+  margin-left: 3px;
+  font-family: 'NotoSansKR';
+}
+.icon-font-lg {
+  font-size: 16px;
   font-weight: 600;
   margin-left: 3px;
   font-family: 'NotoSansKR';

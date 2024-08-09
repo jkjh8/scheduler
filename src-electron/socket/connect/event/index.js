@@ -23,7 +23,9 @@ export default function (socket, type) {
         { upsert: true }
       )
       defaultValue.active = defaultValue.mode === mode
+      defaultValue.activeMode = mode
       fnRt('settings', defaultValue)
+      fnRt('active:mode', mode)
     } catch (error) {
       logger.error(`Active update ${error}`)
     }
@@ -43,6 +45,12 @@ export default function (socket, type) {
     if (defaultValue.update) {
       fnRt('setup:update')
       const { active, auto } = data
+      db.update(
+        { key: 'activeMode' },
+        { $set: { value: active } },
+        { upsert: true }
+      )
+      defaultValue.activeMode = active
       if (active === 'main' && defaultValue.mode === 'main') {
         if (defaultValue.active === false) {
           defaultValue.active = true

@@ -5,6 +5,7 @@ const settings = reactive({
   backupServer: '',
   backupStatus: false,
   active: false,
+  activeMode: 'main',
   mode: 'main',
   count: 0,
   auto: false,

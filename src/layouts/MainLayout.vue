@@ -87,6 +87,22 @@ onMounted(async () => {
       ]
     })
   })
+  window.ipc.on('active:mode', (mode) => {
+    $q.notify({
+      icon: 'warning',
+      message: `스케줄 동작이${mode.toUpperCase()} 변경되 었습니다.`,
+      color: 'warning',
+      position: 'top',
+      actions: [
+        {
+          icon: 'close',
+          round: true,
+          color: 'white',
+          handler: () => {}
+        }
+      ]
+    })
+  })
 })
 </script>
 
@@ -101,6 +117,21 @@ onMounted(async () => {
           <q-icon name="img:LogoMain.png" size="md" />
           <div class="toolbar-font">스케줄 컨트롤러</div>
           <div class="self-end caption sans-font">v{{ version }}</div>
+        </div>
+
+        <div class="row no-wrap g-gutter-x-sm">
+          <q-btn flat icon="home" color="primary" @click="$r.push('/')">
+            <q-tooltip>홈</q-tooltip>
+          </q-btn>
+          <q-separator vertical inset />
+          <q-btn
+            flat
+            icon="schedule"
+            color="primary"
+            @click="$r.push('/schedule')"
+          >
+            <q-tooltip>스케줄</q-tooltip>
+          </q-btn>
         </div>
 
         <div class="row no-wrap items-center q-gutter-x-sm">

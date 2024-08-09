@@ -3,7 +3,7 @@ import defaultValue from 'src-electron/defaultVal'
 import logger from 'src-electron/logger'
 import db from 'src-electron/db'
 import { fnGetMainServerToken } from 'src-electron/api'
-import { fnSendSockets } from 'src-electron/socket'
+import { fnSendSockets, fnSendSocketsAll } from 'src-electron/socket'
 import { schedules } from 'src-electron/schedules'
 
 import ipcSettings from './settings'
@@ -36,6 +36,12 @@ const fnSetIpcMain = () => {
   // handle ipcMain async
   ipcMain.handle('schedules', async (event) => {
     return schedules
+  })
+
+  // active mode
+  ipcMain.on('active:mode', async (event, mode) => {
+    console.log('active:mode', mode)
+    fnSendSocketsAll('active:mode', mode)
   })
 }
 
