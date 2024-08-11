@@ -60,14 +60,15 @@ module.exports = configure(function (/* ctx */) {
         win: {
           target: {
             target: 'nsis',
-            arch: ['x64', 'ia32']
+            arch: ['x64']
           }
         },
         nsis: {
           oneClick: false,
           allowToChangeInstallationDirectory: true
         },
-        extraFiles: [{ from: 'public', to: 'resources', filter: ['**/*'] }]
+        extraFiles: [{ from: 'public', to: 'resources', filter: ['**/*'] }],
+        extraResources: ['.env']
       }
     },
     bex: {

@@ -6,6 +6,12 @@ import initValueFromDb from './db/initValueFromDb.js'
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform()
 
+require('dotenv').config({
+  path: app.isPackaged
+    ? path.join(process.resourcesPath, '.env')
+    : path.resolve(process.cwd(), '.env')
+})
+
 let mainWindow
 const insLock = app.requestSingleInstanceLock()
 if (!insLock) {
