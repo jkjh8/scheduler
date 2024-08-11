@@ -176,7 +176,7 @@ const fnInTime = async (schedule) => {
     const { data } = await api.put(
       `https://${fnGetAddr()}/api/scheduler`,
       {
-        schedule
+        schedule: schedule
       },
       {
         headers: {
