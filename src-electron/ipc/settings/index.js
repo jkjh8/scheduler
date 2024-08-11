@@ -4,8 +4,8 @@ import logger from 'src-electron/logger'
 import db from 'src-electron/db'
 // return to ipcRenderer
 import { fnRt } from '../index'
-// socket connect
-import { fnSendSockets, fnSocketAddressChange } from 'src-electron/socket'
+
+import { fnGetRelayOnTime } from 'src-electron/api/server'
 
 export default function settings() {
   // APP 동작
@@ -62,7 +62,6 @@ export default function settings() {
       db.update({ key: 'mainServer' }, { $set: { value } }, { upsert: true })
       defaultValue.mainServer = value
       logger.info(`Main Server IP Address update ${value}`)
-      fnSocketAddressChange('main')
     } catch (error) {
       logger.error(`Main Server IP Address update ${error}`)
     } finally {
@@ -75,7 +74,6 @@ export default function settings() {
       db.update({ key: 'backupServer' }, { $set: { value } }, { upsert: true })
       defaultValue.backupServer = value
       logger.info(`Backup Server IP Address update ${value}`)
-      fnSocketAddressChange('backup')
     } catch (error) {
       logger.error(`Backup Server IP Address update ${error}`)
     } finally {
@@ -84,9 +82,8 @@ export default function settings() {
   })
 
   ipcMain.on('settings:relayOnTime', () => {
-    console.log('relayOnTime')
     try {
-      fnSendSockets('relayOnTime')
+      fnGetRelayOnTime()
     } catch (error) {
       logger.error(`Relay On Time update ${error}`)
     }

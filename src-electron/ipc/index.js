@@ -1,13 +1,8 @@
 import { BrowserWindow as bw, ipcMain } from 'electron'
-import defaultValue from 'src-electron/defaultVal'
 import logger from 'src-electron/logger'
-import db from 'src-electron/db'
-import { fnGetMainServerToken } from 'src-electron/api'
-import { fnSendSockets, fnSendSocketsAll } from 'src-electron/socket'
 import { schedules } from 'src-electron/schedules'
-
+import { fnGetScheduleToday, fnPutActiveMode } from 'src-electron/api/server'
 import ipcSettings from './settings'
-import ipcApis from './api'
 import ipcOnStart from './onStart'
 
 const fnRt = (channel, obj) => {
@@ -21,16 +16,10 @@ const fnRt = (channel, obj) => {
 const fnSetIpcMain = () => {
   ipcOnStart()
   ipcSettings()
-  ipcApis()
-
-  ipcMain.on('api:main:token', async () => {
-    const token = await fnGetMainServerToken()
-  })
 
   // schedule refresh
   ipcMain.on('schedule:refresh', async () => {
-    console.log('refres')
-    fnSendSockets('schedule:refresh')
+    fnGetScheduleToday()
   })
 
   // handle ipcMain async
@@ -41,7 +30,8 @@ const fnSetIpcMain = () => {
   // active mode
   ipcMain.on('active:mode', async (event, mode) => {
     console.log('active:mode', mode)
-    fnSendSocketsAll('active:mode', mode)
+    fnPutActiveMode(mode)
+    // fnSendSocketsAll('active:mode', mode)
   })
 }
 

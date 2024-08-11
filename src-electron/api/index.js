@@ -1,81 +1,43 @@
-import axios from 'axios'
-import https from 'node:https'
-import defaultValue from 'src-electron/defaultVal'
+import { BrowserWindow as bw } from 'electron'
 import logger from 'src-electron/logger'
+import defaultValue from 'src-electron/defaultVal'
+import {
+  fnGetScheduleToday,
+  fnCheckBackupServer,
+  fnCheckMainServer
+} from './server'
 
-const api = axios.create({
-  httpsAgent: new https.Agent({
-    rejectUnauthorized: false
-  }),
-  withCredentials: true
-})
+let intervalHB = null
+let intervalSchedules = null
 
-let mainServerToken = ''
-let backupServerToken = ''
-
-const fnGetMainServerToken = async () => {
+const fnRt = (channel, obj) => {
   try {
-    const { data } = await api.post(
-      `https://${defaultValue.mainServer}/api/auth`,
-      {
-        email: process.env.USERID,
-        userPassword: process.env.USERPASSWORD
-      }
-    )
-    mainServerToken = data.token
+    bw.fromId(1).webContents.send(channel, obj)
   } catch (error) {
-    mainServerToken = ''
-    logger.error(`Get Main Server Token Error ${error}`)
+    logger.error(`IPC RT Error ${error}`)
   }
 }
 
-const fnGetBackupServerToken = async () => {
-  try {
-    const { data } = await api.post(
-      `https://${defaultValue.backupServer}/api/auth`,
-      {
-        email: process.env.USERID,
-        userPassword: process.env.USERPASSWORD
-      }
-    )
-    backupServerToken = data.token
-  } catch (error) {
-    backupServerToken = ''
-    logger.error(`Get Backup Server Token Error ${error}`)
-  }
+const fnRtSettings = () => {
+  fnRt('settings', defaultValue)
 }
 
-const fnApiMain = async (method, url, data) => {
-  try {
-    const { data } = await api({
-      method,
-      url,
-      data,
-      headers: {
-        Authorization: mainServerToken
-      }
-    })
-    return data
-  } catch (error) {
-    throw error
-  }
+const fnSchedulesInterval = () => {
+  fnGetScheduleToday()
+  intervalSchedules = setInterval(() => {
+    fnGetScheduleToday()
+  }, 1000 * 60 * 5.5)
+  logger.info('Schedules Interval Started')
 }
 
-const fnApiBackup = async (method, url, data) => {
-  try {
-    const { data } = await api({
-      method,
-      url,
-      data,
-      headers: {
-        Authorization: backupServerToken
-      }
-    })
-    return data
-  } catch (error) {
-    throw error
-  }
+const fnHartBeat = () => {
+  fnCheckMainServer()
+  fnCheckBackupServer()
+  intervalHB = setInterval(() => {
+    fnCheckMainServer()
+    fnCheckBackupServer()
+  }, 1000 * 60)
+  logger.info('HartBeat Started')
 }
 
-export default api
-export { fnGetMainServerToken, fnGetBackupServerToken, fnApiMain, fnApiBackup }
+export { fnRt, fnRtSettings, fnHartBeat, fnSchedulesInterval }

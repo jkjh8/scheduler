@@ -1,9 +1,9 @@
 import moment from 'moment'
 import logger from '../logger'
+import defaultValue from '../defaultVal'
 import { schedules } from '../schedules'
 import { fnRt } from '../ipc'
-import { fnSendSockets } from '../socket'
-import defaultValue from '../defaultVal'
+import { fnInTime, fnClean } from '../api/server'
 
 moment.locale('ko')
 let mainInterval = null
@@ -29,7 +29,6 @@ const fnTimer = () => {
       if (defaultValue.active) {
         // 매시간 정각에 이벤트 발생
         if (time.min === '00' && time.sec === '00') {
-          fnSendSockets('hour', time)
           // 00:00:00일 때 스케줄 폴더 및 큐시스 스케줄 폴더 초기화
           if (time.hour === '00') {
             fnClean()
@@ -49,13 +48,10 @@ const fnCheckSchedule = (time) => {
     schedules.forEach((schedule) => {
       if (schedule.time === time.schedule) {
         logger.info(`schedule in time ${schedule.name}, ${schedule.idx}`)
-        fnSendSockets('inTime', schedule)
+        fnInTime(schedule)
       }
     })
   }
 }
 
-const fnClean = () => {
-  fnSendSockets('clean', {})
-}
-export { fnTimer, fnClean }
+export { fnTimer }
