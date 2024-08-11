@@ -6,15 +6,12 @@ import { fnRt, fnRtSettings } from 'src-electron/api'
 import { schedules, fnUpdateSchedule } from 'src-electron/schedules'
 
 let mainServerFail = 0
-// const api = axios.create({
-//   httpsAgent: new https.Agent({
-//     rejectUnauthorized: false
-//   }),
-//   withCredentials: true,
-//   headers: {
-//     authenticate: process.env.SCHEDULER_PASS
-//   }
-// })
+const api = axios.create({
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false
+  }),
+  withCredentials: true
+})
 
 const fnGetAddr = () => {
   return defaultValue.mode === 'main'
@@ -39,13 +36,9 @@ const fnGetMainServer = async () => {
     if (!defaultValue.mainServer) {
       throw new Error('Main Server not set')
     }
-    const { data } = await axios.get(
+    const { data } = await api.get(
       `https://${defaultValue.mainServer}/api/scheduler`,
       {
-        httpsAgent: new https.Agent({
-          rejectUnauthorized: false
-        }),
-        withCredentials: true,
         headers: {
           authenticate: process.env.SCHEDULER_PASS
         }
@@ -66,13 +59,9 @@ const fnGetBackupServer = async () => {
     if (!defaultValue.backupServer) {
       throw new Error('Backup Server not set')
     }
-    const { data } = await axios.get(
+    const { data } = await api.get(
       `https://${defaultValue.backupServer}/api/scheduler`,
       {
-        httpsAgent: new https.Agent({
-          rejectUnauthorized: false
-        }),
-        withCredentials: true,
         headers: {
           authenticate: process.env.SCHEDULER_PASS
         }
@@ -92,13 +81,9 @@ const fnCheckMainServer = async () => {
     if (!defaultValue.mainServer) {
       throw new Error('Main Server not set')
     }
-    const { data } = await axios.get(
+    const { data } = await api.get(
       `https://${defaultValue.mainServer}/api/scheduler/check?mode=${defaultValue.mode}`,
       {
-        httpsAgent: new https.Agent({
-          rejectUnauthorized: false
-        }),
-        withCredentials: true,
         headers: {
           authenticate: process.env.SCHEDULER_PASS
         }
@@ -126,13 +111,9 @@ const fnCheckBackupServer = async () => {
     if (!defaultValue.backupServer) {
       throw new Error('Backup Server not set')
     }
-    const { data } = await axios.get(
+    const { data } = await api.get(
       `https://${defaultValue.backupServer}/api/scheduler/check?mode=${defaultValue.mode}`,
       {
-        httpsAgent: new https.Agent({
-          rejectUnauthorized: false
-        }),
-        withCredentials: true,
         headers: {
           authenticate: process.env.SCHEDULER_PASS
         }
@@ -168,16 +149,12 @@ const fnPutActiveMode = async (mode) => {
     const servers = [defaultValue.mainServer, defaultValue.backupServer]
     for (const server of servers) {
       if (server) {
-        const { data } = await axios.put(
+        const { data } = await api.put(
           `https://${server}/api/scheduler/mode`,
           {
             mode
           },
           {
-            httpsAgent: new https.Agent({
-              rejectUnauthorized: false
-            }),
-            withCredentials: true,
             headers: {
               authenticate: process.env.SCHEDULER_PASS
             }
@@ -196,16 +173,12 @@ const fnPutActiveMode = async (mode) => {
 
 const fnInTime = async (schedule) => {
   try {
-    const { data } = await axios.put(
+    const { data } = await api.put(
       `https://${fnGetAddr()}/api/scheduler`,
       {
         schedule
       },
       {
-        httpsAgent: new https.Agent({
-          rejectUnauthorized: false
-        }),
-        withCredentials: true,
         headers: {
           authenticate: process.env.SCHEDULER_PASS
         }
@@ -218,13 +191,9 @@ const fnInTime = async (schedule) => {
 
 const fnClean = async () => {
   try {
-    const { data } = await axios.get(
+    const { data } = await api.get(
       `https://${fnGetAddr()}/api/scheduler/clean`,
       {
-        httpsAgent: new https.Agent({
-          rejectUnauthorized: false
-        }),
-        withCredentials: true,
         headers: {
           authenticate: process.env.SCHEDULER_PASS
         }
@@ -240,10 +209,6 @@ const fnGetRelayOnTime = async () => {
     const { data } = await axios.get(
       `https://${fnGetAddr()}/api/scheduler/relay`,
       {
-        httpsAgent: new https.Agent({
-          rejectUnauthorized: false
-        }),
-        withCredentials: true,
         headers: {
           authenticate: process.env.SCHEDULER_PASS
         }
