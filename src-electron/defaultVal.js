@@ -1,5 +1,5 @@
 const defaultValue = {
-  mainServer: 'http://localhost:3000',
+  mainServer: '127.0.0.1',
   mainStatus: false,
   backupServer: '',
   backupStatus: false,
