@@ -40,9 +40,7 @@ const fnRefreshSchedule = () => {
   window.ipc.send('schedule:refresh')
 }
 
-onMounted(() => {
-  console.log('settings:', settings)
-})
+onMounted(() => {})
 </script>
 <template>
   <div class="row no-wrap justify-between items-center q-py-sm q-px-md">

@@ -23,7 +23,6 @@ export const useAddress = () => {
       } finally {
         $q.loading.hide()
       }
-      console.log('DialogAddress onOk', data)
     })
   }
 
@@ -44,7 +43,6 @@ export const useAddress = () => {
       } finally {
         $q.loading.hide()
       }
-      console.log('DialogAddress onOk', data)
     })
   }
 

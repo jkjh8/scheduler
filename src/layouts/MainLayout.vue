@@ -12,7 +12,6 @@ const $r = useRouter()
 const $q = useQuasar()
 
 onMounted(async () => {
-  console.log('MainLayout mounted')
   // init
   window.ipc.on('settings', (args) => fnUpdateSettings(args))
   // schedule

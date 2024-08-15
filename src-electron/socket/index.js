@@ -6,7 +6,7 @@ import { fnCheckBackupServer, fnCheckMainServer } from '../api/server'
 import defaultValue from '../defaultVal'
 
 exports.connectIO = () => {
-  const socket = io.connect('http://192.168.1.129/scheduler', {
+  const socket = io.connect('http://127.0.0.1:3000/scheduler', {
     // secure: true,
     transports: ['websocket'],
     rejectUnauthorized: false,

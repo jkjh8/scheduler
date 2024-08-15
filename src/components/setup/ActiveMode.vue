@@ -15,7 +15,6 @@ const fnSelectMode = () => {
       mode: mode.value
     }
   }).onOk((newMode) => {
-    console.log('newMode', newMode)
     settings.mode = newMode
     window.ipc.send('settings:mode', newMode)
     $q.notify({

@@ -29,7 +29,6 @@ const fnSetIpcMain = () => {
 
   // active mode
   ipcMain.on('active:mode', async (event, mode) => {
-    console.log('active:mode', mode)
     fnPutActiveMode(mode)
     // fnSendSocketsAll('active:mode', mode)
   })
