@@ -8,7 +8,8 @@ const defaultValue = {
   auto: false,
   update: false,
   relayOnTime: 5,
-  activeMode: 'main'
+  activeMode: 'main',
+  connected: false
 }
 
 export default defaultValue

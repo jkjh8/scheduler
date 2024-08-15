@@ -1,7 +1,9 @@
 import { io } from 'socket.io-client'
+import { BrowserWindow as bw } from 'electron'
 import logger from 'src-electron/logger'
 import { fnUpdateSchedule } from '../schedules'
 import { fnCheckBackupServer, fnCheckMainServer } from '../api/server'
+import defaultValue from '../defaultVal'
 
 exports.connectIO = () => {
   const socket = io.connect('http://192.168.1.129/scheduler', {
@@ -13,7 +15,9 @@ exports.connectIO = () => {
 
   socket.on('connect', () => {
     logger.info('Socket.io connected')
-    socket.emit('schedules')
+    socket.emit('schedules', {})
+    defaultValue.connected = true
+    bw.fromId(1).webContents.send('settings', defaultValue)
   })
 
   socket.on('connect_error', (err) => {
@@ -26,6 +30,8 @@ exports.connectIO = () => {
 
   socket.on('disconnect', () => {
     logger.info('Socket.io disconnected')
+    defaultValue.connected = false
+    bw.fromId(1).webContents.send('settings', defaultValue)
   })
 
   socket.on('schedules', (data) => {

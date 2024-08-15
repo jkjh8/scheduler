@@ -4,7 +4,7 @@ import { useQuasar } from 'quasar'
 import { settings } from 'src/composables/useSettings.js'
 import DialogMode from './DialogMode.vue'
 
-const { mainStatus, backupStatus, active, mode } = toRefs(settings)
+const { mainStatus, backupStatus, active, mode, connected } = toRefs(settings)
 const $q = useQuasar()
 
 const fnSelectMode = () => {
@@ -40,7 +40,9 @@ const fnRefreshSchedule = () => {
   window.ipc.send('schedule:refresh')
 }
 
-onMounted(() => {})
+onMounted(() => {
+  console.log('settings:', settings)
+})
 </script>
 <template>
   <div class="row no-wrap justify-between items-center q-py-sm q-px-md">
@@ -52,6 +54,9 @@ onMounted(() => {})
       ></q-icon>
       <div>동작 모드:</div>
       <div>{{ mode.toUpperCase() }}</div>
+      <span v-if="connected" class="self-start" style="font-size: 0.5rem"
+        >Connected</span
+      >
     </div>
 
     <div class="row justify-end items-center q-gutter-x-sm">

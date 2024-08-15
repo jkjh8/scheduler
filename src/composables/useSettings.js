@@ -10,7 +10,8 @@ const settings = reactive({
   count: 0,
   auto: false,
   update: false,
-  relayOnTime: 5
+  relayOnTime: 5,
+  connected: false
 })
 
 const fnUpdateSettings = (args) => {
