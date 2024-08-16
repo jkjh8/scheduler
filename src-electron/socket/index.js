@@ -7,12 +7,17 @@ import defaultValue from '../defaultVal'
 
 exports.connectIO = () => {
   try {
-    const socket = io.connect('http://127.0.0.1:3000/scheduler', {
-      // secure: true,
-      transports: ['websocket'],
-      rejectUnauthorized: false,
-      autoConnect: true
-    })
+    const socket = io.connect(
+      process.env.NODE_ENV === 'development'
+        ? 'http://192.168.1.129/scheduler'
+        : 'http://127.0.0.1:3000/scheduler',
+      {
+        // secure: true,
+        transports: ['websocket'],
+        rejectUnauthorized: false,
+        autoConnect: true
+      }
+    )
 
     socket.on('connect', () => {
       logger.info('Socket.io connected')
@@ -37,7 +42,8 @@ exports.connectIO = () => {
 
     socket.on('schedules', (data) => {
       try {
-        fnUpdateSchedule(JSON.parse(data))
+        const schedule = JSON.parse(data)
+        fnUpdateSchedule(schedule)
       } catch (error) {
         logger.error('Error on schedules', error)
       }
