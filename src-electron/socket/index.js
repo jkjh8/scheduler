@@ -6,45 +6,59 @@ import { fnCheckBackupServer, fnCheckMainServer } from '../api/server'
 import defaultValue from '../defaultVal'
 
 exports.connectIO = () => {
-  const socket = io.connect('http://127.0.0.1:3000/scheduler', {
-    // secure: true,
-    transports: ['websocket'],
-    rejectUnauthorized: false,
-    autoConnect: true
-  })
+  try {
+    const socket = io.connect('http://127.0.0.1:3000/scheduler', {
+      // secure: true,
+      transports: ['websocket'],
+      rejectUnauthorized: false,
+      autoConnect: true
+    })
 
-  socket.on('connect', () => {
-    logger.info('Socket.io connected')
-    socket.emit('schedules', {})
-    defaultValue.connected = true
-    bw.fromId(1).webContents.send('settings', defaultValue)
-  })
+    socket.on('connect', () => {
+      logger.info('Socket.io connected')
+      socket.emit('schedules', {})
+      defaultValue.connected = true
+      bw.fromId(1).webContents.send('settings', defaultValue)
+    })
 
-  socket.on('connect_error', (err) => {
-    logger.error('Socket.io connect_error', err)
-  })
+    socket.on('connect_error', (err) => {
+      logger.error('Socket.io connect_error', err)
+    })
 
-  socket.on('error', (error) => {
-    logger.error(`Socket.io error: ${error}`)
-  })
+    socket.on('error', (error) => {
+      logger.error(`Socket.io error: ${error}`)
+    })
 
-  socket.on('disconnect', () => {
-    logger.info('Socket.io disconnected')
-    defaultValue.connected = false
-    bw.fromId(1).webContents.send('settings', defaultValue)
-  })
+    socket.on('disconnect', () => {
+      logger.info('Socket.io disconnected')
+      defaultValue.connected = false
+      bw.fromId(1).webContents.send('settings', defaultValue)
+    })
 
-  socket.on('schedules', (data) => {
-    fnUpdateSchedule(JSON.parse(data))
-  })
+    socket.on('schedules', (data) => {
+      try {
+        fnUpdateSchedule(JSON.parse(data))
+      } catch (error) {
+        logger.error('Error on schedules', error)
+      }
+    })
 
-  socket.on('setup', () => {
-    fnCheckMainServer()
-    fnCheckBackupServer()
-  })
+    socket.on('setup', () => {
+      try {
+        fnCheckMainServer()
+        fnCheckBackupServer()
+      } catch (error) {
+        logger.error('Error on setup', error)
+      }
+    })
+    exports.socket = socket
+  } catch (error) {
+    logger.error('Error on connectIO', error)
+  } finally {
+    // return socket
+  }
 
   // socketParser(socket)
 
   //return
-  exports.socket = socket
 }

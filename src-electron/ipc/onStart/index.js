@@ -2,7 +2,7 @@ import { ipcMain } from 'electron'
 import defaultValue from 'src-electron/defaultVal'
 import logger from 'src-electron/logger'
 
-import { fnInitMulticast } from 'src-electron/multicast'
+// import { fnInitMulticast } from 'src-electron/multicast'
 import { connectIO } from 'src-electron/socket'
 import { fnRt, fnHartBeat, fnSchedulesInterval } from 'src-electron/api'
 import { fnTimer } from 'app/src-electron/timer'
