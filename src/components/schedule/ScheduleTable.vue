@@ -7,7 +7,56 @@ import {
 } from 'src/composables/useSchedules.js'
 
 import TimeView from './TimeView.vue'
-import columns from './columns.js'
+const columns = [
+  {
+    name: 'name',
+    label: '이름',
+    align: 'center',
+    field: 'name',
+    sortable: true
+  },
+  {
+    name: 'user',
+    label: '사용자',
+    align: 'center',
+    field: 'user',
+    sortable: true
+  },
+  {
+    name: 'repeat',
+    label: '반복',
+    align: 'center',
+    field: 'repeat',
+    sortable: true
+  },
+  {
+    name: 'time',
+    label: '시간',
+    align: 'center',
+    sortable: true
+  },
+  {
+    name: 'zones',
+    label: '방송구간',
+    align: 'center',
+    field: 'zones',
+    sortable: true
+  },
+  {
+    name: 'mode',
+    label: '모드',
+    align: 'center',
+    field: 'Mode',
+    sortable: true
+  },
+  {
+    name: 'file',
+    label: '파일',
+    align: 'center',
+    field: 'file',
+    sortable: true
+  }
+]
 </script>
 
 <template>
@@ -22,12 +71,10 @@ import columns from './columns.js'
       :columns="columns"
       :rows="schedules"
       :pagination="{ rowsPerPage: 10 }"
+      wrap-cells
     >
       <template #body="props">
         <q-tr :props="props">
-          <q-td key="idx" :props="props">
-            {{ props.row.idx }}
-          </q-td>
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -52,21 +99,16 @@ import columns from './columns.js'
               </q-chip>
             </span>
           </q-td>
+          <q-td key="mode" :props="props">
+            <span v-if="props.row.Mode === 'live'">실시간방송</span>
+            <span v-else-if="props.row.Mode === 'message'">메시지방송</span>
+            <span v-else>TTS</span>
+          </q-td>
           <q-td key="file" :props="props">
             <div v-if="props.row.file">
               {{ props.row.file.base }}
             </div>
           </q-td>
-          <!-- <q-td key="actions" :props="props">
-            <div>
-              <q-btn round flat icon="edit" color="primary" size="sm">
-                <q-tooltip>수정</q-tooltip>
-              </q-btn>
-              <q-btn round flat icon="delete" color="red-10" size="sm">
-                <q-tooltip>삭제</q-tooltip>
-              </q-btn>
-            </div>
-          </q-td> -->
         </q-tr>
       </template>
     </q-table>

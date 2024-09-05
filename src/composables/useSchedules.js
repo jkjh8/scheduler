@@ -19,7 +19,8 @@ const fnGetScheduleModeLabel = (value) => {
 const modeOptions = [
   { label: '한번', value: 'once' },
   { label: '매일', value: 'everyDay' },
-  { label: '매주', value: 'everyWeek' }
+  { label: '매주', value: 'everyWeek' },
+  { label: '월~금', value: 'workDays' }
 ]
 
 const localeKR = {

@@ -9,7 +9,7 @@ exports.connectIO = () => {
   try {
     const socket = io.connect(
       process.env.NODE_ENV === 'development'
-        ? 'http://192.168.1.129/scheduler'
+        ? 'http://10.20.0.191/scheduler'
         : 'http://127.0.0.1:3000/scheduler',
       {
         // secure: true,
