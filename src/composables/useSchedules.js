@@ -7,7 +7,7 @@ const fnGetSchedules = async () => {
 }
 
 const fnUpdateSchedules = (arr) => {
-  schedules.value = [...arr]
+  schedules.value = arr
 }
 
 const fnGetScheduleModeLabel = (value) => {

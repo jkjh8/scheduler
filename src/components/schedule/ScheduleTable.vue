@@ -43,15 +43,8 @@ const columns = [
     sortable: true
   },
   {
-    name: 'mode',
-    label: '모드',
-    align: 'center',
-    field: 'Mode',
-    sortable: true
-  },
-  {
     name: 'file',
-    label: '파일',
+    label: '송출',
     align: 'center',
     field: 'file',
     sortable: true
@@ -105,7 +98,15 @@ const columns = [
             <span v-else>TTS</span>
           </q-td>
           <q-td key="file" :props="props">
+            <div v-if="props.row.Mode === 'live'">
+              <q-icon name="mic" color="primary" size="xs" />
+              <span v-if="props.row.Status && props.row.Status == 1">
+                본사방송
+              </span>
+              <span v-else> 지역방송 </span>
+            </div>
             <div v-if="props.row.file">
+              <q-icon name="play_arrow" color="primary" size="xs" />
               {{ props.row.file.base }}
             </div>
           </q-td>

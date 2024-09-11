@@ -9,13 +9,16 @@ exports.connectIO = () => {
   try {
     const socket = io.connect(
       process.env.NODE_ENV === 'development'
-        ? 'http://10.20.0.191/scheduler'
+        ? 'https://10.20.0.191/scheduler'
         : 'http://127.0.0.1:3000/scheduler',
       {
         // secure: true,
         transports: ['websocket'],
         rejectUnauthorized: false,
-        autoConnect: true
+        autoConnect: true,
+        extraHeaders: {
+          token: process.env.SCHEDULER_PASS
+        }
       }
     )
 
