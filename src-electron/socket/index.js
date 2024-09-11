@@ -52,6 +52,16 @@ exports.connectIO = () => {
       }
     })
 
+    socket.on('active', (mode) => {
+      try {
+        defaultValue.activeMode = mode
+        defaultValue.active = mode === defaultValue.mode
+        bw.fromId(1).webContents.send('settings', defaultValue)
+      } catch (error) {
+        logger.error('Error on active', error)
+      }
+    })
+
     socket.on('setup', () => {
       try {
         fnCheckMainServer()
