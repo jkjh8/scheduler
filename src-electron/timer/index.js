@@ -4,6 +4,8 @@ import defaultValue from '../defaultVal'
 import { schedules } from '../schedules'
 import { fnRt } from '../ipc'
 import { fnInTime, fnClean } from '../api/server'
+import { socket } from '../socket'
+import { fnCheckMainServer, fnCheckBackupServer } from '../api/server'
 
 moment.locale('ko')
 let mainInterval = null
@@ -27,11 +29,18 @@ const fnTimer = () => {
       fnRt('timer', time)
       // active가 true일 때만 실행
       if (defaultValue.active) {
-        // 매시간 정각에 이벤트 발생
-        if (time.min === '00' && time.sec === '00') {
-          // 00:00:00일 때 스케줄 폴더 및 큐시스 스케줄 폴더 초기화
-          if (time.hour === '00') {
-            fnClean()
+        // 매 00초 마다 스케줄 갱신
+        if (time.sec === '00') {
+          fnCheckMainServer()
+          fnCheckBackupServer()
+          socket.emit('schedules', {})
+          // 매시간 정각에 이벤트 발생
+          if (time.min === '00') {
+            socket.emit('oclock')
+            // 00:00:00일 때 스케줄 폴더 및 큐시스 스케줄 폴더 초기화
+            if (time.hour === '00') {
+              fnClean()
+            }
           }
         }
         fnCheckSchedule(time)

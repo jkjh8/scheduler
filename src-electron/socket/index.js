@@ -5,11 +5,13 @@ import { fnUpdateSchedule } from '../schedules'
 import { fnCheckBackupServer, fnCheckMainServer } from '../api/server'
 import defaultValue from '../defaultVal'
 
-exports.connectIO = () => {
+let socket = null
+
+const connectIO = () => {
   try {
     const socket = io.connect(
       process.env.NODE_ENV === 'development'
-        ? 'https://10.20.0.191/scheduler'
+        ? 'https://10.20.0.192/scheduler'
         : 'http://127.0.0.1:3000/scheduler',
       {
         // secure: true,
@@ -70,7 +72,6 @@ exports.connectIO = () => {
         logger.error('Error on setup', error)
       }
     })
-    exports.socket = socket
   } catch (error) {
     logger.error('Error on connectIO', error)
   } finally {
@@ -81,3 +82,5 @@ exports.connectIO = () => {
 
   //return
 }
+
+export { connectIO, socket }

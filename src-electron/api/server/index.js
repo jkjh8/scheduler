@@ -22,57 +22,40 @@ const fnGetAddr = () => {
 const fnGetScheduleToday = async () => {
   try {
     if (defaultValue.mode === 'main') {
-      await fnGetMainServer()
+      await fnGetServer(defaultValue.mainServer, 'main')
     } else {
-      await fnGetBackupServer()
+      await fnGetServer(defaultValue.backupServer, 'backup')
     }
   } catch (error) {
     logger.error(`Get Schedule Today Error ${error}`)
   }
 }
 
-const fnGetMainServer = async () => {
+const fnGetServer = async (server, mode) => {
   try {
-    if (!defaultValue.mainServer) {
-      throw new Error('Main Server not set')
+    if (!server) {
+      throw new Error(`${mode} Server not set`)
     }
-    const { data } = await api.get(
-      `https://${defaultValue.mainServer}/api/scheduler`,
-      {
-        headers: {
-          authenticate: process.env.SCHEDULER_PASS
-        }
+    const { data } = await api.get(`https://${server}/api/scheduler`, {
+      headers: {
+        authenticate: process.env.SCHEDULER_PASS
       }
-    )
+    })
     mainServerFail = 0
-    defaultValue.mainStatus = true
-    defaultValue.relayOnTime = data.relayOnTime
-    fnUpdateSchedule(data.schedules)
-    fnRt('schedules', schedules)
-  } catch (error) {
-    defaultValue.mainStatus = false
-  }
-}
-
-const fnGetBackupServer = async () => {
-  try {
-    if (!defaultValue.backupServer) {
-      throw new Error('Backup Server not set')
+    if (mode === 'main') {
+      defaultValue.mainStatus = true
+    } else {
+      defaultValue.backupStatus = true
     }
-    const { data } = await api.get(
-      `https://${defaultValue.backupServer}/api/scheduler`,
-      {
-        headers: {
-          authenticate: process.env.SCHEDULER_PASS
-        }
-      }
-    )
-    defaultValue.backupStatus = true
     defaultValue.relayOnTime = data.relayOnTime
     fnUpdateSchedule(data.schedules)
     fnRt('schedules', schedules)
   } catch (error) {
-    defaultValue.backupStatus = false
+    if (mode === 'main') {
+      defaultValue.mainStatus = false
+    } else {
+      defaultValue.backupStatus = false
+    }
   }
 }
 
@@ -89,15 +72,16 @@ const fnCheckMainServer = async () => {
         }
       }
     )
+    console.log(data)
     defaultValue.mainStatus = true
-    defaultValue.activeMode = data.active
+    defaultValue.activeMode = data.activeMode
     defaultValue.relayOnTime = data.relayOnTime
     mainServerFail = 0
     if (defaultValue.update) {
       defaultValue.auto = data.auto
-      defaultValue.active = data.active === 'main'
+      defaultValue.active = defaultValue.activeMode == defaultValue.mode
     }
-    fnRt('schedules', schedules)
+    // fnRt('schedules', schedules)
   } catch (error) {
     defaultValue.mainStatus = false
     mainServerFail++
@@ -120,11 +104,13 @@ const fnCheckBackupServer = async () => {
       }
     )
     defaultValue.backupStatus = true
-    defaultValue.activeMode = data.active
-    defaultValue.relayOnTime = data.relayOnTime
-    if (defaultValue.update) {
-      defaultValue.auto = data.auto
-      defaultValue.active = data.active === 'backup'
+    if (mainServerFail > 2) {
+      defaultValue.activeMode = data.activeMode
+      defaultValue.relayOnTime = data.relayOnTime
+      if (defaultValue.update) {
+        defaultValue.auto = data.auto
+        defaultValue.active = defaultValue.activeMode == defaultValue.mode
+      }
     }
     if (
       defaultValue.auto &&
@@ -136,7 +122,7 @@ const fnCheckBackupServer = async () => {
     if (defaultValue.auto && mainServerFail < 1) {
       defaultValue.active = false
     }
-    fnRt('schedules', schedules)
+    // fnRt('schedules', schedules)
   } catch (error) {
     defaultValue.backupStatus = false
   } finally {

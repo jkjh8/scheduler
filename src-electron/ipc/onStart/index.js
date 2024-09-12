@@ -4,7 +4,8 @@ import logger from 'src-electron/logger'
 
 // import { fnInitMulticast } from 'src-electron/multicast'
 import { connectIO } from 'src-electron/socket'
-import { fnRt, fnHartBeat, fnSchedulesInterval } from 'src-electron/api'
+import { fnRt } from 'src-electron/api'
+import { fnCheckMainServer, fnCheckBackupServer } from 'src-electron/api/server'
 import { fnTimer } from 'app/src-electron/timer'
 
 export default function settings() {
@@ -13,8 +14,8 @@ export default function settings() {
       // fnInitMulticast()
       connectIO()
       fnTimer()
-      fnHartBeat()
-      fnSchedulesInterval()
+      fnCheckMainServer()
+      fnCheckBackupServer()
       fnRt('settings', defaultValue)
       logger.info('UI Opened')
     } catch (error) {
